@@ -1,4 +1,12 @@
 <?php
+/**
+ * Plugin logInMyPluxml
+ *
+ * @package	PLX
+ * @version	1.1
+ * @date	19/01/2014
+ * @author	Cyril MAGUIRE
+ **/
 # ---------------- FONCTION DE BANNISSEMENT ---------------
 # ------------------ BEGIN LICENSE BLOCK ------------------
 #

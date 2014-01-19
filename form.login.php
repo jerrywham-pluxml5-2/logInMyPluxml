@@ -7,6 +7,10 @@
  * @date	19/01/2014
  * @author	Cyril MAGUIRE
  **/
+# initialisation de la classe de bannissement
+include_once(PLX_ROOT.'plugins/logInMyPluxml/ban.php');
+$Ban = new BanYourAss();
+
 # récuperation d'une instance de plxShow
 $plxShow = plxShow::getInstance();
 $plxPlugin = $plxShow->plxMotor->plxPlugins->getInstance('logInMyPluxml');
@@ -53,19 +57,26 @@ if(!empty($_POST['login']) AND !empty($_POST['password'])) {
 		}
 	}
 	if($connected) {
+		$Ban->ban_loginOk();
 		header('Location: '.plxUtils::getRacine());
 		exit;
 	} else {
+		$Ban->ban_loginFailed();
+		$msg = L_ERR_WRONG_PASSWORD;
+		$error = 'error';
+	}
+	if (!$Ban->ban_canLogin()) {
+		$Ban->ban_loginFailed();
 		$msg = L_ERR_WRONG_PASSWORD;
 		$error = 'error';
 	}
 }
 plxUtils::cleanHeaders();
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $plxMotor->aConf['default_lang'] ?>" lang="<?php echo $plxMotor->aConf['default_lang'] ?>">
+<!DOCTYPE html>
+<html lang="<?php $plxShow->defaultLang() ?>">
 <head>
+	<meta charset="<?php $plxShow->charset('min'); ?>">
 	<meta name="robots" content="noindex, nofollow" />
 	<title><?php $plxShow->pageTitle(); ?> - <?php echo L_AUTH_PAGE_TITLE ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo strtolower(PLX_CHARSET); ?>" />
@@ -113,9 +124,9 @@ plxUtils::cleanHeaders();
 		<div class="title"><?php echo L_LOGIN_PUBLIC_PAGE ?></div>
 		<?php (!empty($msg))?plxUtils::showMsg($msg, $error):''; ?>
 		<label for="id_login"><?php echo L_AUTH_LOGIN_FIELD ?>&nbsp;:</label>
-		<?php plxUtils::printInput('login', (!empty($_POST['login']))?plxUtils::strCheck($_POST['login']):'', 'text', '18-255',false,'','" required="required"');?>
+		<?php plxUtils::printInput('login', (!empty($_POST['login']))?plxUtils::strCheck($_POST['login']):'', 'text', '18-255',false,'','" required="required');?>
 		<label for="id_password"><?php echo L_AUTH_PASSWORD_FIELD ?>&nbsp;:</label>
-		<?php plxUtils::printInput('password', '', 'password','18-255',false,'','" required="required"');?>
+		<?php plxUtils::printInput('password', '', 'password','18-255',false,'','" required="required');?>
 		<p><input class="button submit" type="submit" value="<?php echo L_SUBMIT_BUTTON ?>" /></p>
 	</fieldset>
 	</form>

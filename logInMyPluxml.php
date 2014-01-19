@@ -27,7 +27,6 @@ class logInMyPluxml extends plxPlugin {
 		# Déclarations des hooks		
 		$this->addHook('Index', 'Index');
 		$this->addHook('plxShowStaticListEnd', 'plxShowStaticListEnd');
-		$this->addHook('ThemeEndHead', 'ThemeEndHead');
 	}
 	/**
 	 * Méthode de traitement de la connexion
@@ -37,7 +36,7 @@ class logInMyPluxml extends plxPlugin {
 	 **/
 	public function Index() {
 		$string = '
-			if (isset($_SESSION[\'timeout\']) && ($_SESSION[\'timeout\'])<time() ) {
+			if ((isset($_SESSION[\'timeout\']) && ($_SESSION[\'timeout\'])<time()) OR ($plxMotor->get && preg_match(\'/^logout\/?/\',$plxMotor->get))) {
 				$plxMotor->mode=\'loginRequest\';
 				if(isset($_SESSION[\'user\']) ) {
 					unset($_SESSION[\'user\']);
@@ -48,22 +47,8 @@ class logInMyPluxml extends plxPlugin {
 					PLX_LOGINPAGE === false;
 				}
 				header(\'Location:\'.plxUtils::getRacine());
-			} else {
-				$_SESSION[\'timeout\'] = '.($this->getParam('timeout') == 0 ? 'time()+(60*60*24*365)' : 'time()+(60*'.$this->getParam('timeout').')').';
 			}
 			$session_domain = dirname(__FILE__);
-			if($plxMotor->get && preg_match(\'/^logout\/?/\',$plxMotor->get)) {
-				$plxMotor->mode=\'loginRequest\';
-				if(isset($_SESSION[\'user\']) ) {
-					unset($_SESSION[\'user\']);
-				}
-				$_SESSION = array();
-				session_destroy();
-				if (defined(\'PLX_LOGINPAGE\')) {
-					PLX_LOGINPAGE === false;
-				}
-				header(\'Location:\'.plxUtils::getRacine());
-			}
 			# Test sur le domaine et sur l\'identification pour le mode preview
 			if((isset($_SESSION[\'domain\']) AND $_SESSION[\'domain\']==$session_domain.\'/core/admin\') AND isset($_SESSION[\'preview\']) AND !empty($_SESSION[\'preview\']) AND (isset($_SESSION[\'user\']) AND $_SESSION[\'user\']!=\'\') AND $plxMotor->get && preg_match(\'/^preview\/?/\',$plxMotor->get)){
 				$plxMotor->mode==\'login\';
@@ -88,11 +73,6 @@ class logInMyPluxml extends plxPlugin {
 			}
 		';
 		echo "<?php ".$string."?>";
-	}
-
-	public function ThemeEndHead() {
-		echo '<pre style="border: 1px solid #e3af43; background-color: #f8edd5; padding: 10px; overflow: auto;color:#111;">'; print_r($_SESSION);echo('</pre>');
-		echo '<pre style="border: 1px solid #e3af43; background-color: #f8edd5; padding: 10px; overflow: auto;color:#111;">'; print_r(time());echo('</pre>');
 	}
 	/**
 	 * Méthode de traitement du hook plxShowStaticListEnd

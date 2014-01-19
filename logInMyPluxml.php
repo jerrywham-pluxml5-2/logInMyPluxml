@@ -3,7 +3,7 @@
  * Plugin logInMyPluxml
  *
  * @package	PLX
- * @version	1.2
+ * @version	1.3
  * @date	19/01/2014
  * @author	Cyril MAGUIRE
  **/
@@ -27,6 +27,7 @@ class logInMyPluxml extends plxPlugin {
 		# Déclarations des hooks		
 		$this->addHook('Index', 'Index');
 		$this->addHook('plxShowStaticListEnd', 'plxShowStaticListEnd');
+		$this->addHook('ThemeEndHead', 'ThemeEndHead');
 	}
 	/**
 	 * Méthode de traitement de la connexion
@@ -36,6 +37,20 @@ class logInMyPluxml extends plxPlugin {
 	 **/
 	public function Index() {
 		$string = '
+			if (isset($_SESSION[\'timeout\']) && ($_SESSION[\'timeout\'])<time() ) {
+				$plxMotor->mode=\'loginRequest\';
+				if(isset($_SESSION[\'user\']) ) {
+					unset($_SESSION[\'user\']);
+				}
+				$_SESSION = array();
+				session_destroy();
+				if (defined(\'PLX_LOGINPAGE\')) {
+					PLX_LOGINPAGE === false;
+				}
+				header(\'Location:\'.plxUtils::getRacine());
+			} else {
+				$_SESSION[\'timeout\'] = '.($this->getParam('timeout') == 0 ? 'time()+(60*60*24*365)' : 'time()+(60*'.$this->getParam('timeout').')').';
+			}
 			$session_domain = dirname(__FILE__);
 			if($plxMotor->get && preg_match(\'/^logout\/?/\',$plxMotor->get)) {
 				$plxMotor->mode=\'loginRequest\';
@@ -66,12 +81,18 @@ class logInMyPluxml extends plxPlugin {
 						include_once(PLX_ROOT.\'plugins/logInMyPluxml/form.login.php\');
 						exit;
 					}else {
+						$_SESSION[\'timeout\'] = '.($this->getParam('timeout') == 0 ? 'time()+(60*60*24*365)' : 'time()+(60*'.$this->getParam('timeout').')').';
 						$plxMotor->mode==\'login\';
 					}
 				} 
 			}
 		';
 		echo "<?php ".$string."?>";
+	}
+
+	public function ThemeEndHead() {
+		echo '<pre style="border: 1px solid #e3af43; background-color: #f8edd5; padding: 10px; overflow: auto;color:#111;">'; print_r($_SESSION);echo('</pre>');
+		echo '<pre style="border: 1px solid #e3af43; background-color: #f8edd5; padding: 10px; overflow: auto;color:#111;">'; print_r(time());echo('</pre>');
 	}
 	/**
 	 * Méthode de traitement du hook plxShowStaticListEnd

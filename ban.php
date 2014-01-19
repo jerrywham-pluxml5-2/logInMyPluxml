@@ -3,7 +3,7 @@
  * Plugin logInMyPluxml
  *
  * @package	PLX
- * @version	1.2
+ * @version	1.3
  * @date	19/01/2014
  * @author	Cyril MAGUIRE
  **/

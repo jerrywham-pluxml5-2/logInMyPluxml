@@ -3,7 +3,7 @@
  * Plugin logInMyPluxml
  *
  * @package	PLX
- * @version	1.1
+ * @version	1.2
  * @date	19/01/2014
  * @author	Cyril MAGUIRE
  **/
@@ -58,7 +58,7 @@ if(!empty($_POST['login']) AND !empty($_POST['password'])) {
 	}
 	if($connected) {
 		$Ban->ban_loginOk();
-		header('Location: '.plxUtils::getRacine());
+		header('Location: '.plxUtils::getRacine().$plxMotor->get);
 		exit;
 	} else {
 		$Ban->ban_loginFailed();
@@ -118,7 +118,7 @@ plxUtils::cleanHeaders();
 
 <body id="auth">
 <div id="login">
-	<form action="" method="post" id="form_auth">
+	<form action="<?php echo plxUtils::getRacine().$plxMotor->get; ?>" method="post" id="form_auth">
 	<fieldset>
 		<?php echo plxToken::getTokenPostMethod() ?>
 		<div class="title"><?php echo L_LOGIN_PUBLIC_PAGE ?></div>

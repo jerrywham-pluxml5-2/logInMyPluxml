@@ -3,7 +3,7 @@
  * Plugin logInMyPluxml
  *
  * @package	PLX
- * @version	1.1
+ * @version	1.2
  * @date	19/01/2014
  * @author	Cyril MAGUIRE
  **/
@@ -25,7 +25,7 @@ class logInMyPluxml extends plxPlugin {
 		$this->setConfigProfil(PROFIL_ADMIN);
 
 		# Déclarations des hooks		
-		$this->addHook('IndexBegin', 'IndexBegin');
+		$this->addHook('Index', 'Index');
 		$this->addHook('plxShowStaticListEnd', 'plxShowStaticListEnd');
 	}
 	/**
@@ -34,7 +34,7 @@ class logInMyPluxml extends plxPlugin {
 	 * @return	stdio
 	 * @author	Cyril MAGUIRE
 	 **/
-	public function IndexBegin() {
+	public function Index() {
 		$string = '
 			$session_domain = dirname(__FILE__);
 			if($plxMotor->get && preg_match(\'/^logout\/?/\',$plxMotor->get)) {

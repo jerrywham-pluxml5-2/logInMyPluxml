@@ -11,7 +11,7 @@
 include_once(PLX_ROOT.'plugins/logInMyPluxml/ban.php');
 $Ban = new BanYourAss();
 
-# récuperation d'une instance de plxShow
+# récupération d'une instance de plxShow
 $plxShow = plxShow::getInstance();
 $plxPlugin = $plxShow->plxMotor->plxPlugins->getInstance('logInMyPluxml');
 
@@ -78,7 +78,7 @@ plxUtils::cleanHeaders();
 <head>
 	<meta charset="<?php $plxShow->charset('min'); ?>">
 	<meta name="robots" content="noindex, nofollow" />
-	<title><?php $plxShow->pageTitle(); ?> - <?php echo L_AUTH_PAGE_TITLE ?></title>
+	<title><?php echo plxUtils::strCheck($plxMotor->aConf['title']); ?> - <?php echo L_AUTH_PAGE_TITLE ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo strtolower(PLX_CHARSET); ?>" />
 	<link rel="icon" href="<?php $plxShow->template(); ?>/img/favicon.png" />
 	<style type="text/css">
